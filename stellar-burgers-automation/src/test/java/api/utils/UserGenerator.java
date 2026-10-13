@@ -1,13 +1,15 @@
-package utils;
+package api.utils;
 
 import models.User;
-import java.util.UUID;
+import net.datafaker.Faker;
 
 public class UserGenerator {
     public static User generateUser() {
-        String name = "Eugene";
-        String password = "qwer123";
-        String email = "evgeniy@mail.ru" + UUID.randomUUID();
+        Faker faker = new Faker();
+
+        String name = faker.name().fullName();
+        String password = faker.credentials().password();
+        String email = faker.internet().emailAddress();
 
         return new User(name, password, email);
     }

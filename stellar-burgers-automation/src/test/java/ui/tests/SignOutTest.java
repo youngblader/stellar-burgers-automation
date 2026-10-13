@@ -1,62 +1,28 @@
-package tests;
+package ui.tests;
 
-import clients.UserClient;
 import io.qameta.allure.Description;
-import models.User;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
-import pages.*;
-import utils.BaseTest;
-import utils.BrowserFactory;
-import utils.UserGenerator;
 
-public class SignOutTest extends BaseTest {
-    private WebDriver driver;
+import ui.pages.HomePage;
+import ui.pages.LoginPage;
+import ui.pages.ProfilePage;
 
-    private UserClient userClient;
-    private User user;
-    private String accessToken;
-
+public class SignOutTest extends BaseUITestWithUser {
     private ProfilePage profilePage;
     private HomePage homePage;
     private LoginPage loginPage;
 
     @BeforeEach
-    void setUp() {
-        initDriver();
-        prepareUser();
+    void setupUITest() {
         initPages();
     }
 
-    private void initDriver() {
-        driver = BrowserFactory.createDriver();
-    }
-
-    private void prepareUser() {
-        userClient = new UserClient();
-        user = UserGenerator.generateUser();
-        userClient.createUser(user);
-        accessToken = userClient.loginUser(user).path("accessToken");
-    }
-
     private void initPages() {
-        profilePage = new ProfilePage(driver);
-        homePage = new HomePage(driver);
-        loginPage = new LoginPage(driver);
-    }
-
-    @AfterEach
-    void tearDown() {
-        if (accessToken != null) {
-            userClient.deleteUser(accessToken);
-        }
-
-        if (driver != null) {
-            driver.quit();
-        }
+        profilePage = new ProfilePage();
+        homePage = new HomePage();
+        loginPage = new LoginPage();
     }
 
     @Test

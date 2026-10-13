@@ -1,94 +1,80 @@
-package pages;
+package ui.pages;
 
-import constants.Routes;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.$x;
 
 public class HomePage {
-    private final WebDriver driver;
+    private final SelenideElement singInButton = $x(".//button[text()=\"Войти в аккаунт\"]");
+    private final SelenideElement personalAccountButton = $x(".//a[@class='AppHeader_header__link__3D_hX' and normalize-space()='Личный Кабинет']");
+    private final SelenideElement orderButton = $x(".//button[text()='Оформить заказ']");
 
-    private final By singInButton = By.xpath(".//button[text()=\"Войти в аккаунт\"]");
-    private final By personalAccountButton = By.xpath(".//a[@class='AppHeader_header__link__3D_hX' and normalize-space()='Личный Кабинет']");
-    private final By orderButton = By.xpath(".//button[text()='Оформить заказ']");
+    private final SelenideElement constructorHeader = $x("//h1[text()='Соберите бургер']");
+    private final SelenideElement bunsTab = $x("//span[text()='Булки']");
+    private final SelenideElement saucesTab = $x("//span[text()='Соусы']");
+    private final SelenideElement fillingsTab = $x("//span[text()='Начинки']");
+    private final SelenideElement activeTabSpan = $x("//div[contains(@class, 'tab_tab_type_current')]//span");
 
-    private final By constructorHeader = By.xpath("//h1[text()='Соберите бургер']");
-    private final By bunsTab = By.xpath("//span[text()='Булки']");
-    private final By saucesTab = By.xpath("//span[text()='Соусы']");
-    private final By fillingsTab = By.xpath("//span[text()='Начинки']");
-    private final By activeTabSpan = By.xpath("//div[contains(@class, 'tab_tab_type_current')]//span");
-    private final By bunsHeader = By.xpath("//h2[text()='Булки']");
-    private final By saucesHeader = By.xpath("//h2[text()='Соусы']");
-    private final By fillingsHeader = By.xpath("//h2[text()='Начинки']");
-
-    public HomePage(WebDriver driver) {
-        this.driver = driver;
-    }
+    private final SelenideElement bunsHeader = $x("//h2[text()='Булки']");
+    private final SelenideElement saucesHeader = $x("//h2[text()='Соусы']");
+    private final SelenideElement fillingsHeader = $x("//h2[text()='Начинки']");
 
     @Step("Открыть главную страницу")
     public void open() {
-        String URL = Routes.BASE_URL;
-        driver.get(URL);
+        Selenide.open();
     }
 
     @Step("Ожидание появление кнопки оформления заказа")
     public void waitSuccessOrderButtonDisplayed() {
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(orderButton));
+        orderButton.shouldBe(visible);
     }
 
     @Step("Нажатие на кнопку войти в аккаунт")
     public void clickLoginButton() {
-        driver.findElement(singInButton).click();
+        singInButton.click();
     }
 
     @Step("Нажатие на кнопку Личный кабинет")
     public void clickPersonalAccountButton() {
-        driver.findElement(personalAccountButton).click();
+        personalAccountButton.click();
     }
 
     public void waitForConstructorPage() {
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(constructorHeader));
+        constructorHeader.shouldBe(visible);
     }
 
     public void clickBunsTab() {
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(bunsTab)).click();
+        bunsTab.shouldBe(clickable).click();
     }
 
     public void clickSaucesTab() {
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(saucesTab)).click();
+        saucesTab.shouldBe(clickable).click();
     }
 
     public void clickFillingsTab() {
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(fillingsTab)).click();
+        fillingsTab.shouldBe(clickable).click();
     }
 
     public void waitForActiveTab(String tabName) {
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.textToBe(activeTabSpan, tabName));
+        activeTabSpan.shouldHave(exactText(tabName));
     }
 
     public String getActiveTabText() {
-        return driver.findElement(activeTabSpan).getText();
+        return activeTabSpan.getText();
     }
 
     public boolean isBunsHeaderDisplayed() {
-        return driver.findElement(bunsHeader).isDisplayed();
+        return bunsHeader.isDisplayed();
     }
 
     public boolean isSaucesHeaderDisplayed() {
-        return driver.findElement(saucesHeader).isDisplayed();
+        return saucesHeader.isDisplayed();
     }
 
     public boolean isFillingsHeaderDisplayed() {
-        return driver.findElement(fillingsHeader).isDisplayed();
+        return fillingsHeader.isDisplayed();
     }
 }

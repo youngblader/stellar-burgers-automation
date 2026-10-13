@@ -1,6 +1,7 @@
-package api;
+package api.tests;
 
 import clients.UserClient;
+import api.utils.UserGenerator;
 import io.qameta.allure.Description;
 import io.restassured.response.Response;
 import models.User;
@@ -8,12 +9,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import utils.BaseTest;
-import utils.UserGenerator;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class LoginUserTest extends BaseTest {
+public class LoginUserTest extends BaseApiTest {
     private UserClient userClient;
     private User user;
     private String accessToken;

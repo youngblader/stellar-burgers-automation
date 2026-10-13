@@ -1,28 +1,17 @@
-package tests;
+package ui.tests;
 
-import clients.UserClient;
 import io.qameta.allure.Description;
-import models.User;
-import org.junit.jupiter.api.*;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import pages.*;
-import utils.BaseTest;
-import utils.BrowserFactory;
-import utils.UserGenerator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
+import ui.config.Routes;
+import ui.pages.*;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static com.codeborne.selenide.Selenide.webdriver;
+import static com.codeborne.selenide.WebDriverConditions.urlContaining;
 
-public class SignInTest extends BaseTest {
-    private WebDriver driver;
-
-    private User user;
-    private UserClient userClient;
-    private String accessToken;
-
+public class SignInTest extends BaseUITestWithUser {
     private HomePage homePage;
     private LoginPage loginPage;
     private SignUpPage signUpPage;
@@ -30,40 +19,16 @@ public class SignInTest extends BaseTest {
     private ProfilePage profilePage;
 
     @BeforeEach
-    void setUp() {
-        initDriver();
-        prepareUser();
+    void setupUITest() {
         initPages();
     }
 
-    private void initDriver() {
-        driver = BrowserFactory.createDriver();
-    }
-
-    private void prepareUser() {
-        userClient = new UserClient();
-        user = UserGenerator.generateUser();
-        userClient.createUser(user);
-        accessToken = userClient.loginUser(user).path("accessToken");
-    }
-
     private void initPages() {
-        homePage = new HomePage(driver);
-        loginPage = new LoginPage(driver);
-        signUpPage = new SignUpPage(driver);
-        profilePage = new ProfilePage(driver);
-        forgotPasswordPage = new ForgotPasswordPage(driver);
-    }
-
-    @AfterEach
-    void tearDown() {
-        if (accessToken != null) {
-            userClient.deleteUser(accessToken);
-        }
-
-        if (driver != null) {
-            driver.quit();
-        }
+        homePage = new HomePage();
+        loginPage = new LoginPage();
+        signUpPage = new SignUpPage();
+        profilePage = new ProfilePage();
+        forgotPasswordPage = new ForgotPasswordPage();
     }
 
     @Test
@@ -120,10 +85,7 @@ public class SignInTest extends BaseTest {
         loginPage.login(user.getEmail(), user.getPassword());
         homePage.clickPersonalAccountButton();
 
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.urlContains("/account/profile"));
-
-        assertTrue(driver.getCurrentUrl().contains("/account/profile"));
+        webdriver().shouldHave(urlContaining(Routes.PROFILE));
 
         profilePage.waitSignOutButtonDisplayed();
     }

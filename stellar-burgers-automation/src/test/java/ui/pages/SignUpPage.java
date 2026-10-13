@@ -1,54 +1,46 @@
-package pages;
+package ui.pages;
 
-import constants.Routes;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import ui.config.Routes;
 
-import java.time.Duration;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.$x;
 
 public class SignUpPage {
-    private final WebDriver driver;
+    private final SelenideElement nameField = $x(".//div[label='Имя']//input");
+    private final SelenideElement emailField = $x(".//div[label='Email']//input");
+    private final SelenideElement passwordField = $x(".//div[label='Пароль']//input");
 
-    private final By nameField = By.xpath(".//div[label='Имя']//input");
-    private final By emailField = By.xpath(".//div[label='Email']//input");
-    private final By passwordField = By.xpath(".//div[label='Пароль']//input");
+    private final SelenideElement signUpButton = $x(".//button[text()='Зарегистрироваться']");
+    private final SelenideElement signInButton = $x(".//a[@class='Auth_link__1fOlj' and normalize-space()='Войти']");
 
-    private final By signUpButton = By.xpath(".//button[text()='Зарегистрироваться']");
-    private final By signInButton = By.xpath(".//a[@class='Auth_link__1fOlj' and normalize-space()='Войти']");
-
-    private final By passwordErrorText = By.xpath(".//p[text()='Некорректный пароль']");
-
-    public SignUpPage(WebDriver driver) {
-        this.driver = driver;
-    }
+    private final SelenideElement passwordErrorText = $x(".//p[text()='Некорректный пароль']");
 
     @Step("Открыть страницу регистрации")
     public void open() {
-        String URL = Routes.REGISTER;
-        driver.get(URL);
+        Selenide.open(Routes.REGISTER);
     }
 
     public void clickSignInButton() {
-        driver.findElement(signInButton).click();
+        signInButton.click();
     }
 
     public void clickSignUpButton() {
-        driver.findElement(signUpButton).click();
+        signUpButton.click();
     }
 
     public void setEmailField(String value) {
-        driver.findElement(emailField).sendKeys(value);
+        emailField.setValue(value);
     }
 
     public void setPasswordField(String value) {
-        driver.findElement(passwordField).sendKeys(value);
+        passwordField.setValue(value);
     }
 
     public void setNameField(String value) {
-        driver.findElement(nameField).sendKeys(value);
+        nameField.setValue(value);
     }
 
     @Step("Ввод данных для регистрации пользователя")
@@ -61,7 +53,6 @@ public class SignUpPage {
 
     @Step("Ожидание отображение ошибки в форме регистрации")
     public void waitPasswordErrorDisplayed() {
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(passwordErrorText));
+        passwordErrorText.shouldBe(visible);
     }
 }

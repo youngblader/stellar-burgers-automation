@@ -1,13 +1,18 @@
-package api.utils;
+package api.tests;
 
+import api.config.TestConfig;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeEach;
+import org.aeonbits.owner.ConfigFactory;
+import org.junit.jupiter.api.BeforeAll;
 
 public class BaseApiTest {
-    public static final String BASE_URL = "https://stellarburgers.education-services.ru/api";
+    private static TestConfig config;
 
-    @BeforeEach
-    void setUp() {
-        RestAssured.baseURI = BASE_URL;
+    @BeforeAll
+    static void setup() {
+        config = ConfigFactory.create(TestConfig.class);
+
+        RestAssured.baseURI = config.baseUrl();
+        RestAssured.useRelaxedHTTPSValidation();
     }
 }

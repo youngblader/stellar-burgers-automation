@@ -1,6 +1,7 @@
-package api;
+package api.tests;
 
 import clients.UserClient;
+import api.utils.UserGenerator;
 import io.qameta.allure.Description;
 import io.restassured.response.Response;
 import models.User;
@@ -8,12 +9,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import utils.BaseTest;
-import utils.UserGenerator;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class CreateUserTest extends BaseTest {
+public class CreateUserTest extends BaseApiTest {
     private UserClient userClient;
     private User user;
     private String accessToken;
@@ -39,6 +38,9 @@ public class CreateUserTest extends BaseTest {
 
        Response loginResponse = userClient.loginUser(user);
        accessToken = loginResponse.path("accessToken");
+
+
+       System.out.println(response.body().asString());
 
        response.then()
                .body("success", equalTo(true))

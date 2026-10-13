@@ -1,25 +1,20 @@
-package tests;
+package ui.tests;
 
 import io.qameta.allure.Description;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
-import pages.HomePage;
-import utils.BrowserFactory;
+import ui.pages.HomePage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConstructorTest {
-    private WebDriver driver;
     private HomePage homePage;
 
     @BeforeEach
-    void setUp() {
-        driver = BrowserFactory.createDriver();
-        homePage = new HomePage(driver);
+    void setUpUITest() {
+        homePage = new HomePage();
 
         homePage.open();
         homePage.waitForConstructorPage();
@@ -59,12 +54,5 @@ public class ConstructorTest {
 
         assertEquals("Булки", homePage.getActiveTabText());
         assertTrue(homePage.isBunsHeaderDisplayed());
-    }
-
-    @AfterEach
-    void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
     }
 }

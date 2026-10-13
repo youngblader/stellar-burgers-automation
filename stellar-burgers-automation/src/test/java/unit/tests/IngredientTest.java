@@ -1,10 +1,10 @@
-package unit;
+package unit.tests;
 
-import models.Ingredient;
-import models.IngredientType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import unit.models.Ingredient;
+import unit.models.IngredientType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

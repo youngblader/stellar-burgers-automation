@@ -1,5 +1,6 @@
-package api.clients;
+package clients;
 
+import api.config.ApiRoutes;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
@@ -10,9 +11,6 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 
 public class OrderClient {
-    private static final String ORDERS_ROUTE = "/orders";
-    private static final String INGREDIENTS_ROUTE = "/ingredients";
-
     @Step("Создание заказа")
     public Response createOrder(List<String> ingredients, String accessToken) {
         Map<String, List<String>> body = new HashMap<>();
@@ -22,14 +20,14 @@ public class OrderClient {
                 .header("Authorization", accessToken)
                 .contentType("application/json")
                 .body(body)
-                .post(ORDERS_ROUTE);
+                .post(ApiRoutes.ORDERS_ROUTE);
     }
 
     @Step("Получение ингредиентов")
     public Response getIngredients() {
         return given()
                 .contentType("application/json")
-                .get(INGREDIENTS_ROUTE);
+                .get(ApiRoutes.INGREDIENTS_ROUTE);
     }
 
     @Step("Получить заказы")
@@ -37,6 +35,6 @@ public class OrderClient {
         return given()
                 .header("Authorization", accessToken)
                 .contentType("application/json")
-                .get(ORDERS_ROUTE);
+                .get(ApiRoutes.ORDERS_ROUTE);
     }
 }

@@ -1,4 +1,4 @@
-package models;
+package unit.models;
 
 /**
  * Перечисление с типами ингредиентов.

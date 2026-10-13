@@ -1,26 +1,23 @@
-package tests;
+package ui.tests;
 
+import api.tests.BaseApiTest;
+import api.utils.UserGenerator;
 import clients.UserClient;
 import io.qameta.allure.Description;
 import models.User;
+import net.datafaker.Faker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import pages.LoginPage;
-import pages.SignUpPage;
-import utils.BrowserFactory;
-import utils.UserGenerator;
+import ui.config.Routes;
+import ui.pages.LoginPage;
+import ui.pages.SignUpPage;
 
-import java.time.Duration;
+import static com.codeborne.selenide.Selenide.webdriver;
+import static com.codeborne.selenide.WebDriverConditions.urlContaining;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-public class SignUpTest {
-    private WebDriver driver;
+public class SignUpTest extends BaseApiTest {
     private User user;
     private SignUpPage signUpPage;
     private LoginPage loginPage;
@@ -29,8 +26,7 @@ public class SignUpTest {
     private String accessToken;
 
     @BeforeEach
-    void setUp() {
-        initDriver();
+    void setupUITest() {
         prepareUser();
         initPages();
     }
@@ -40,23 +36,15 @@ public class SignUpTest {
         user = UserGenerator.generateUser();
     }
 
-    private void initDriver() {
-        driver = BrowserFactory.createDriver();
-    }
-
     private void initPages() {
-        signUpPage = new SignUpPage(driver);
-        loginPage = new LoginPage(driver);
+        signUpPage = new SignUpPage();
+        loginPage = new LoginPage();
     }
 
     @AfterEach
     void tearDown() {
         if (accessToken != null) {
             userClient.deleteUser(accessToken);
-        }
-
-        if (driver != null) {
-            driver.quit();
         }
     }
 
@@ -69,10 +57,7 @@ public class SignUpTest {
 
         accessToken = userClient.loginUser(user).path("accessToken");
 
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.urlContains("/login"));
-
-        assertTrue(driver.getCurrentUrl().contains("/login"));
+        webdriver().shouldHave(urlContaining(Routes.LOGIN));
 
         loginPage.waitForSignInButtonDisplayed();
     }
@@ -81,8 +66,11 @@ public class SignUpTest {
     @DisplayName("Ошибка при пароле меньше 6 символов")
     @Description("Отображается ошибка при попытке регистрации с паролем меньше 6 символов")
     void signUpWithShortPasswordShowsError() {
+        Faker faker = new Faker();
+        String password = faker.credentials().password(1, 5, true, true);
+
         signUpPage.open();
-        signUpPage.signUp(user.getName(), user.getEmail(), "12345");
+        signUpPage.signUp(user.getName(), user.getEmail(), password);
 
         signUpPage.waitPasswordErrorDisplayed();
     }

@@ -1,14 +1,14 @@
-package unit;
+package unit.tests;
 
-import models.Bun;
-import models.Burger;
-import models.Ingredient;
-import models.IngredientType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import unit.models.Bun;
+import unit.models.Burger;
+import unit.models.Ingredient;
+import unit.models.IngredientType;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;

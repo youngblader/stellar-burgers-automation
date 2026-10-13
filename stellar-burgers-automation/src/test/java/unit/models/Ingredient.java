@@ -1,4 +1,4 @@
-package models;
+package unit.models;
 
 /**
  * Модель ингредиента.

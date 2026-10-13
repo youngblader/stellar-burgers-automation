@@ -1,50 +1,41 @@
-package pages;
+package ui.pages;
 
-import constants.Routes;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import ui.config.Routes;
 
-import java.time.Duration;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.$x;
 
 public class LoginPage {
-    private final WebDriver driver;
-
-    private final By emailField = By.xpath(".//div[label='Email']//input");
-    private final By passwordField = By.xpath(".//div[label='Пароль']//input");
-    private final By singInButton = By.xpath(".//button[text()='Войти']");
-
-    public LoginPage(WebDriver driver) {
-        this.driver = driver;
-    }
+    private final SelenideElement emailField = $x(".//div[label='Email']//input");
+    private final SelenideElement passwordField = $x(".//div[label='Пароль']//input");
+    private final SelenideElement signInButton = $x(".//button[text()='Войти']");
 
     @Step("Открытие страницы логина")
     public void open() {
-        String URL = Routes.LOGIN;
-        driver.get(URL);
+        Selenide.open(Routes.LOGIN);
     }
 
     @Step("Нажатие на кнопку 'Войти'")
     public void clickLoginButton() {
-        driver.findElement(singInButton).click();
+        signInButton.click();
     }
 
     public void setEmailField(String value) {
-        driver.findElement(emailField).clear();
-        driver.findElement(emailField).sendKeys(value);
+        emailField.clear();
+        emailField.setValue(value);
     }
 
     public void setPasswordField(String value) {
-        driver.findElement(passwordField).clear();
-        driver.findElement(passwordField).sendKeys(value);
+        passwordField.clear();
+        passwordField.setValue(value);
     }
 
     @Step("Ожидание появление кнопки входа")
     public void waitForSignInButtonDisplayed() {
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(singInButton));
+        signInButton.shouldBe(visible);
     }
 
     @Step("Ввод данных логина, логин")
