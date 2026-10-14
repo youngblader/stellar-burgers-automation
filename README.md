@@ -19,7 +19,7 @@ mvn test
 To generate the Allure report, run:
 
 ```bash
-mvn allure serve target/allure-results
+mvn allure:serve
 ```
 
 ## Built with
