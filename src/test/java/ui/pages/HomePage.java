@@ -24,7 +24,7 @@ public class HomePage {
 
     @Step("Открыть главную страницу")
     public void open() {
-        Selenide.open();
+        Selenide.open("/");
     }
 
     @Step("Ожидание появление кнопки оформления заказа")
