@@ -6,4 +6,6 @@ public final class ApiRoutes {
     public static final String LOGIN_USER_ROUTE = "/auth/login";
     public static final String ORDERS_ROUTE = "/orders";
     public static final String INGREDIENTS_ROUTE = "/ingredients";
+
+    private ApiRoutes() {}
 }
