@@ -1,39 +1,155 @@
 # Stellar Burgers Test Automation
 
-## Getting Started
+Автоматизированные тесты для веб-приложения **Stellar Burgers** (конструктор бургеров): API-тесты, UI-тесты и unit-тесты на Java с отчётами Allure.
 
-Follow these instructions to run the automated tests on your machine.
+## Что покрыто тестами
 
-Clone the repo:
+Всего 41 тестовый метод в трёх наборах.
 
-```bash
-git clone https://github.com/youngblader/stellar-burgers-automation.git
+| Набор | Пакет | Что проверяется |
+| --- | --- | --- |
+| API | `api.tests` | Создание пользователя, авторизация, обновление данных пользователя, создание заказа, получение заказов |
+| UI | `ui.tests` | Регистрация, вход (через разные точки входа), выход из аккаунта, переключение вкладок конструктора |
+| Unit | `unit.tests` | Модели бургера: булки, ингредиенты, типы ингредиентов, добавление, перемещение, удаление ингредиентов, расчёт цены и чек |
+
+### API-тесты
+
+- **Создание пользователя:** уникальный пользователь, уже зарегистрированный пользователь, отсутствие имени, пароля или email.
+- **Авторизация:** существующий пользователь, неверный пароль, неверный email.
+- **Обновление данных:** с авторизацией и без неё.
+- **Создание заказа:** с авторизацией и без, с ингредиентами и без, с невалидными хэшами ингредиентов.
+- **Получение заказов:** авторизованным и неавторизованным пользователем.
+
+### UI-тесты
+
+- **Регистрация:** успешная регистрация, ошибка при пароле короче 6 символов.
+- **Вход:** через кнопку «Войти в аккаунт», «Личный кабинет», форму регистрации и страницу восстановления пароля.
+- **Личный кабинет:** переход со страницы восстановления пароля и выход из аккаунта.
+- **Конструктор:** переключение вкладок «Булки», «Соусы» и «Начинки».
+
+### Unit-тесты
+
+Проверяют классы `Bun`, `Ingredient`, `IngredientType` и `Burger` с использованием моков (Mockito) и параметризованных тестов (JUnit 5).
+
+## Технологии
+
+| Назначение | Инструмент |
+| --- | --- |
+| Язык | Java 17 |
+| Сборка | Maven |
+| Тестовый раннер | JUnit 5 |
+| UI-тесты | Selenide, Selenium WebDriver |
+| API-тесты | REST Assured |
+| Unit-тесты | JUnit 5, Mockito |
+| Отчёты | Allure |
+| Тестовые данные | DataFaker |
+| Конфигурация | Owner |
+
+## Структура проекта
+
+```text
+src
+├── main/java/models            # модель пользователя (User)
+└── test
+    ├── java
+    │   ├── api
+    │   │   ├── config          # конфигурация и пути API
+    │   │   ├── tests           # API-тесты
+    │   │   └── utils           # генератор тестовых пользователей
+    │   ├── clients             # клиенты API (UserClient, OrderClient)
+    │   ├── ui
+    │   │   ├── config          # пути страниц приложения
+    │   │   ├── pages           # Page Object классы
+    │   │   └── tests           # UI-тесты
+    │   └── unit
+    │       ├── models          # проверяемые модели бургера
+    │       └── tests           # unit-тесты
+    └── resources
+        ├── allure.properties
+        ├── config.properties.example
+        └── selenide.properties
 ```
 
-Open the project in your IDE and run the tests using Maven:
+## Подход к тестам
+
+- **Page Object:** страницы приложения описаны отдельными классами, действия на страницах оформлены как шаги Allure (`@Step`).
+- **Слой клиентов:** запросы к API вынесены в `UserClient` и `OrderClient`, пути собраны в константах `ApiRoutes`.
+- **Изолированные данные:** для каждого теста генерируется новый пользователь, после теста он удаляется через API.
+- **Подготовка через API:** в UI-тестах пользователь создаётся через API, а не через интерфейс, чтобы тесты были быстрее и стабильнее.
+- **Конфигурация вне кода:** адрес API хранится в `config.properties`, настройки браузера и таймаутов в `selenide.properties`.
+
+## Быстрый старт
+
+1. Склонируйте репозиторий:
+
+   ```bash
+   git clone https://github.com/youngblader/stellar-burgers-automation.git
+   cd stellar-burgers-automation
+   ```
+
+2. Создайте файл конфигурации из примера:
+
+   ```bash
+   cp src/test/resources/config.properties.example src/test/resources/config.properties
+   ```
+
+3. Откройте `src/test/resources/config.properties` и укажите адрес API:
+
+   ```properties
+   base.api.url=https://qa-stellarburgers.education-services.ru/api
+   browser=chrome
+   ```
+
+   Файл `config.properties` добавлен в `.gitignore` и не попадает в репозиторий.
+
+Адрес веб-приложения для UI-тестов задан в `src/test/resources/selenide.properties` (`selenide.baseUrl`).
+
+## Запуск тестов
+
+Все тесты:
 
 ```bash
 mvn test
 ```
 
-To generate the Allure report, run:
+Отдельные наборы:
+
+```bash
+mvn test -Dtest='api.tests.*'
+mvn test -Dtest='ui.tests.*'
+mvn test -Dtest='unit.tests.*'
+```
+
+Один тестовый класс:
+
+```bash
+mvn test -Dtest=SignInTest
+```
+
+UI-тесты без открытия окна браузера:
+
+```bash
+mvn test -Dselenide.headless=true
+```
+
+## Отчёты Allure
+
+Результаты прогона сохраняются в `target/allure-results`.
+
+Открыть отчёт в браузере:
 
 ```bash
 mvn allure:serve
 ```
 
-## Built with
+Собрать отчёт в папку `target/site/allure-maven-plugin`:
 
-- Java
-- Selenium WebDriver
-- Selenide
-- Rest Assured
-- JUnit 5
-- Allure
-- DataFaker
-- Maven
-- Owner
+```bash
+mvn allure:report
+```
 
-## License
+В отчёте у каждого теста есть название (`@DisplayName`), описание (`@Description`) и пошаговое выполнение (`@Step`). Скриншоты и исходный код страниц при падении UI-тестов Selenide сохраняет в `build/reports/selenide`.
 
-This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
+## Лицензия
+
+Проект распространяется по лицензии MIT, подробности в файле [LICENSE](LICENSE).
