@@ -52,6 +52,7 @@ public class LoginUserTest extends BaseApiTest {
         user.setPassword(null);
 
         Response response = userClient.loginUser(user);
+        accessToken = response.path("accessToken");
 
         response.then()
                 .body("message", equalTo("email or password are incorrect"))
@@ -66,6 +67,7 @@ public class LoginUserTest extends BaseApiTest {
         user.setEmail(null);
 
         Response response = userClient.loginUser(user);
+        accessToken = response.path("accessToken");
 
         response.then()
                 .body("message", equalTo("email or password are incorrect"))
