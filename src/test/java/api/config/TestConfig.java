@@ -1,11 +1,12 @@
 package api.config;
 
 import org.aeonbits.owner.Config;
-import org.aeonbits.owner.Config.DefaultValue;
-import org.aeonbits.owner.Config.Key;
+import org.aeonbits.owner.Config.LoadPolicy;
+import org.aeonbits.owner.Config.LoadType;
 import org.aeonbits.owner.Config.Sources;
 
-@Sources({"classpath:config.properties"})
+@LoadPolicy(LoadType.MERGE)
+@Sources({"system:properties", "classpath:config.properties"})
 public interface TestConfig extends Config {
     @Key("base.api.url")
     String baseUrl();
