@@ -86,6 +86,6 @@ public class BurgerTest {
 
         assertTrue(receipt.contains("(==== white bun ====)"));
         assertTrue(receipt.contains("= sauce ketchup ="));
-        assertTrue(receipt.contains("Price: 200,000000"));
+        assertTrue(receipt.contains(String.format("Price: %f", 200f)));
     }
 }
