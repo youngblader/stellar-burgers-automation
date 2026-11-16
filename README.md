@@ -44,6 +44,7 @@
 | Отчёты | Allure |
 | Тестовые данные | DataFaker |
 | Конфигурация | Owner |
+| CI | Jenkins (в Docker) |
 
 ## Структура проекта
 
@@ -132,6 +133,12 @@ UI-тесты без открытия окна браузера:
 mvn test -Dselenide.headless=true
 ```
 
+Адрес API можно передать параметром вместо файла `config.properties` (параметр имеет приоритет над файлом):
+
+```bash
+mvn test -Dbase.api.url=<адрес API>
+```
+
 ## Отчёты Allure
 
 Результаты прогона сохраняются в `target/allure-results`.
@@ -149,6 +156,100 @@ mvn allure:report
 ```
 
 В отчёте у каждого теста есть название (`@DisplayName`), описание (`@Description`) и пошаговое выполнение (`@Step`). Скриншоты и исходный код страниц при падении UI-тестов Selenide сохраняет в `build/reports/selenide`.
+
+## Запуск в Jenkins (Docker)
+
+Тесты можно запускать на Jenkins, развёрнутом в Docker, и получать Allure-отчёт на странице каждой сборки.
+
+### 1. Запуск Jenkins в Docker
+
+Создайте `docker-compose.yml`:
+
+```yaml
+version: '3.7'
+services: # описание сервисов, которые развернутся при запуске файла
+  jenkins: # развернётся Jenkins
+    image: jenkins/jenkins:lts # образ, который скачается для установки Jenkins
+    privileged: true
+    user: root
+    ports: # порты, которые использует сервис
+      - 8081:8080 # В контейнере Jenkins развернётся на порте 8080,
+        # но на локальной машине этот порт часто занят,
+        # поэтому порт 8080 контейнера связывается
+        # с портом 8081 на локальной машине.
+      # Получится адрес localhost:8081
+    container_name: aqa-burgers-jenkins # имя контейнера: оно может быть любым
+```
+
+Запустите контейнер и получите пароль для первого входа:
+
+```bash
+docker compose up -d
+docker exec aqa-burgers-jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+```
+
+Jenkins откроется по адресу `http://localhost:8081`. При первом входе установите рекомендуемые плагины.
+
+> Контейнер нужно останавливать командой `docker compose stop`. Команда `docker compose down` удаляет контейнер, а без тома `jenkins_home` ещё и все настройки.
+
+### 2. Браузер для UI-тестов
+
+В образе Jenkins нет браузера, поэтому установите Chromium и драйвер в контейнер:
+
+```bash
+docker exec -u root aqa-burgers-jenkins bash -c "apt-get update && apt-get install -y chromium chromium-driver"
+```
+
+При пересоздании контейнера команду нужно выполнить снова.
+
+### 3. Плагины и инструменты
+
+1. **Manage Jenkins → Plugins → Available plugins**: установите **Allure Jenkins Plugin**.
+2. **Manage Jenkins → Tools** добавьте (везде с опцией Install automatically):
+   - JDK 17;
+   - Maven;
+   - Allure Commandline.
+
+### 4. Секрет с адресом API
+
+Файл `config.properties` не хранится в репозитории, поэтому адрес API передаётся в тесты из Jenkins:
+
+1. **Manage Jenkins → Credentials → System → Global credentials → Add Credentials**.
+2. Тип **Secret text**, в поле Secret укажите адрес API, ID: `base-api-url`.
+
+### 5. Настройка job
+
+Создайте **Freestyle project** со следующими параметрами:
+
+| Раздел | Настройка |
+| --- | --- |
+| Source Code Management | Git, URL репозитория, ветка `*/main` |
+| Build Environment | **Use secret text(s) or file(s)** → Secret text, Variable `BASE_API_URL`, Credentials `base-api-url` |
+| Build Steps | **Invoke top-level Maven targets** (выберите настроенный Maven), поле Goals — см. ниже |
+| Post-build Actions | **Allure Report**, Path: `target/allure-results` |
+
+Goals:
+
+```text
+clean test -Dbase.api.url=$BASE_API_URL -Dbrowser=chrome -Dselenide.browser=chrome -Dselenide.headless=true -Dselenide.browserBinary=/usr/bin/chromium -Dwebdriver.chrome.driver=/usr/bin/chromedriver -Dchromeoptions.args=--no-sandbox,--disable-dev-shm-usage
+```
+
+### 6. Запуск и результат
+
+Нажмите **Build Now**. После сборки на странице появится ссылка **Allure Report**. Отчёт строится и для упавших сборок.
+
+### Как конфигурация доходит до тестов
+
+Класс `TestConfig` (Owner) читает настройки из системных свойств и из `config.properties`. Системные свойства (`-Dbase.api.url=...`) имеют приоритет, поэтому локально тесты работают с файлом, а в Jenkins значение передаётся параметром. Если файла `config.properties` нет, ошибки не возникает.
+
+### Возможные проблемы
+
+| Симптом | Причина и решение |
+| --- | --- |
+| `baseURI cannot be null` | Адрес API не передан: проверьте секрет, переменную `BASE_API_URL` и параметр `-Dbase.api.url` |
+| `chromedriver must exist` | В контейнере не установлены Chromium и драйвер (шаг 2) |
+| `Driver server process died prematurely, exit value: 127` | Драйвер не подходит под архитектуру (например, ARM на Apple Silicon): используйте `chromium-driver` из пакетов контейнера |
+| Тесты падают из-за формата чисел | Проверки не должны зависеть от локали (например, использовать `String.format("%f", ...)` вместо жёстко заданной запятой) |
 
 ## Лицензия
 
