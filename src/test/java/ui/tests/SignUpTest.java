@@ -1,5 +1,7 @@
 package ui.tests;
 
+import api.annotations.Negative;
+import api.annotations.Positive;
 import api.tests.BaseApiTest;
 import api.utils.UserGenerator;
 import clients.UserClient;
@@ -49,6 +51,7 @@ public class SignUpTest extends BaseApiTest {
     }
 
     @Test
+    @Positive
     @DisplayName("Регистрация пользователя")
     @Description("Успешная регистрация нового пользователя с последующим переходом на страницу входа")
     void signUpReturnsUserToLoginPage() {
@@ -63,6 +66,7 @@ public class SignUpTest extends BaseApiTest {
     }
 
     @Test
+    @Negative
     @DisplayName("Ошибка при пароле меньше 6 символов")
     @Description("Отображается ошибка при попытке регистрации с паролем меньше 6 символов")
     void signUpWithShortPasswordShowsError() {

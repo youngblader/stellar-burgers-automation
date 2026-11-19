@@ -1,5 +1,7 @@
 package api.tests;
 
+import api.annotations.Negative;
+import api.annotations.Positive;
 import clients.OrderClient;
 import clients.UserClient;
 import api.utils.UserGenerator;
@@ -37,6 +39,7 @@ public class GetOrdersTest extends BaseApiTest {
     }
 
     @Test
+    @Positive
     @DisplayName("Получение заказов авторизованного пользователя")
     @Description("Успешное получение списка заказов авторизованного пользователя")
     void getOrdersByAuthorizedUser() {
@@ -59,6 +62,7 @@ public class GetOrdersTest extends BaseApiTest {
     }
 
     @Test
+    @Negative
     @DisplayName("Получить заказ пользователя без авторизации")
     @Description("Возвращает ошибку при попытке запроса заказа пользователя без авторизации")
     void getOrdersByUnauthorizedUser() {

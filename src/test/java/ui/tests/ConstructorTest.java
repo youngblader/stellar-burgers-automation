@@ -1,5 +1,6 @@
 package ui.tests;
 
+import api.annotations.Positive;
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +10,7 @@ import ui.pages.HomePage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Positive
 public class ConstructorTest {
     private HomePage homePage;
 

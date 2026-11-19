@@ -1,5 +1,6 @@
 package ui.tests;
 
+import api.annotations.Positive;
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +27,7 @@ public class SignOutTest extends BaseUITestWithUser {
     }
 
     @Test
+    @Positive
     @DisplayName("Выход из аккаунта")
     @Description("Успешный выход из аккаунта через кнопку Выйти в личном кабинете")
     void signOut() {

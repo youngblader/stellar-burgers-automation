@@ -1,5 +1,7 @@
 package api.tests;
 
+import api.annotations.Negative;
+import api.annotations.Positive;
 import clients.UserClient;
 import api.utils.UserGenerator;
 import io.qameta.allure.Description;
@@ -31,6 +33,7 @@ public class UpdateUserDataTest extends BaseApiTest {
     }
 
     @Test
+    @Positive
     @DisplayName("Обновление данных пользователя с авторизацией")
     @Description("Проверяет, что авторизованный пользователь может успешно обновить свои данные")
     void updateUserDataWithAuth() {
@@ -49,6 +52,7 @@ public class UpdateUserDataTest extends BaseApiTest {
     }
 
     @Test
+    @Negative
     @DisplayName("Обновление данных пользователя без авторизации")
     @Description("Возвращает ошибку при попытке обновить данные без авторизации")
     void updateUserDataWithoutAuthReturnError() {

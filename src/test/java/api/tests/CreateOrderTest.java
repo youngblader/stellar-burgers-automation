@@ -1,5 +1,7 @@
 package api.tests;
 
+import api.annotations.Negative;
+import api.annotations.Positive;
 import clients.OrderClient;
 import clients.UserClient;
 import api.utils.UserGenerator;
@@ -38,6 +40,7 @@ public class CreateOrderTest extends BaseApiTest {
     }
 
     @Test
+    @Positive
     @DisplayName("Создание заказа авторизованным пользователем")
     @Description("Успешное создание заказа авторизованным пользователем")
     void createOrderByAuthorized() {
@@ -57,6 +60,7 @@ public class CreateOrderTest extends BaseApiTest {
     }
 
     @Test
+    @Positive
     @DisplayName("Создание заказа неавторизованным пользователем")
     @Description("Успешное создание заказа без авторизации")
     void createOrderByUnAuthorized() {
@@ -71,6 +75,7 @@ public class CreateOrderTest extends BaseApiTest {
     }
 
     @Test
+    @Positive
     @DisplayName("Создание заказа с ингредиентами")
     @Description("Успешное создание заказа при передаче списка ингредиентов")
     void createOrderWithIngredients() {
@@ -85,6 +90,7 @@ public class CreateOrderTest extends BaseApiTest {
     }
 
     @Test
+    @Negative
     @DisplayName("Создание заказа без ингредиентов")
     @Description("Возвращает ошибку, если создать заказ без ингредиентов")
     void createOrderWithoutIngredients() {
@@ -96,6 +102,7 @@ public class CreateOrderTest extends BaseApiTest {
     }
 
     @Test
+    @Negative
     @DisplayName("Создание заказа с невалидными хэшами ингредиентов")
     @Description("Проверяет, что при передаче невалидных hash-идентификаторов ингредиентов возвращается ошибка")
     void createOrderWithInvalidIngredientHash() {

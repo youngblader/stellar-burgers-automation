@@ -1,5 +1,7 @@
 package api.tests;
 
+import api.annotations.Negative;
+import api.annotations.Positive;
 import clients.UserClient;
 import api.utils.UserGenerator;
 import io.qameta.allure.Description;
@@ -31,6 +33,7 @@ public class LoginUserTest extends BaseApiTest {
     }
 
     @Test
+    @Positive
     @DisplayName("Авторизация существующего пользователя")
     @Description("Успешная авторизация уже зарегистрированного пользователя")
     void loginWithExistingUser() {
@@ -45,6 +48,7 @@ public class LoginUserTest extends BaseApiTest {
     }
 
     @Test
+    @Negative
     @DisplayName("Авторизация с невалидным паролем")
     @Description("Возвращает ошибку при попытке авторизации с неверным паролем")
     void loginWithInvalidPassword() {
@@ -60,6 +64,7 @@ public class LoginUserTest extends BaseApiTest {
     }
 
     @Test
+    @Negative
     @DisplayName("Авторизация с невалидным email")
     @Description("Возвращает ошибку при попытке авторизации с неверным email")
     void loginWithInvalidEmail() {

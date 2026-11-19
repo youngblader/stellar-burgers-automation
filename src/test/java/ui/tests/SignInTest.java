@@ -1,5 +1,6 @@
 package ui.tests;
 
+import api.annotations.Positive;
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,6 +33,7 @@ public class SignInTest extends BaseUITestWithUser {
     }
 
     @Test
+    @Positive
     @DisplayName("Вход через кнопку Войти в аккаунт на главной")
     @Description("Успешный вход в аккаунт через кнопку Войти в аккаунт на главной странице")
     void loginViaEnterAccountButtonOnHomePage() {
@@ -43,6 +45,7 @@ public class SignInTest extends BaseUITestWithUser {
     }
 
     @Test
+    @Positive
     @DisplayName("Вход через кнопку Личный кабинет")
     @Description("Успешный вход в аккаунт через кнопку Личный кабинет на главной странице")
     void loginViaPersonalAccountButton() {
@@ -54,6 +57,7 @@ public class SignInTest extends BaseUITestWithUser {
     }
 
     @Test
+    @Positive
     @DisplayName("Вход через кнопку Войти в форме регистрации")
     @Description("Успешный вход в аккаунт через кнопку Войти на странице регистрации")
     void loginViaButtonInRegistrationForm() {
@@ -65,6 +69,7 @@ public class SignInTest extends BaseUITestWithUser {
     }
 
     @Test
+    @Positive
     @DisplayName("Вход через кнопку Войти со страницы восстановления пароля")
     @Description("Успешный вход в аккаунт через кнопку Войти на странице восстановления пароля")
     void loginViaButtonInPasswordRecoveryForm() {
@@ -76,6 +81,7 @@ public class SignInTest extends BaseUITestWithUser {
     }
 
     @Test
+    @Positive
     @DisplayName("Переход в личный кабинет со страницы восстановления пароля")
     @Description("После авторизации пользователь успешно переходит в личный кабинет")
     void shouldNavigateToPersonalAccount() {
